@@ -1,0 +1,6 @@
+Defensa de jpa 
+Examen 1--> Modificar el borrado de mecánicos para que permita borrar únicamente en caso de que no tenga averías, intervenciones ni contratos. Si tiene contrato activo, marcar este como finalizado y dar de baja a mecánico poniendo en el nombre del mismo "INACTIVO_"
+Examen 2--> Crear una opción en el menú administrador para que cuando metas un salario te de todos los contratos cuyo salario sea mayor al dado.(HECHO)
+Examen 3--> Una opción de menú que devuelva todos los mecánicos que han reutilizado repuestos en averías de no más de un año. (HECHO)
+Examen 4--> Crear un nuevo action de Cash que liste todas las facturas de más de 200€ que tengan más de un año y con el estado SIN_ABONAR.(HECHO)
+Examen 5--> Ahora hay facturas con estado PAGO_DUDOSO. Hacer un método que pase a PAGO_DUDOSO todas las facturas que lleven más de un año en estado SIN_ABONAR. (HECHO)
