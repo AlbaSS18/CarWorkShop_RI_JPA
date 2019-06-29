@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings 
+	xmlns="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_1.xsd"
+  	version="2.0">
+  	 	
+  	<entity name="Averia" class="uo.ri.model.Averia" access="FIELD">
+  		<table name="TAVERIAS">
+  		<unique-constraint>
+            <column-name>FECHA</column-name>
+            <column-name>VEHICULO_ID</column-name>
+        </unique-constraint>
+        </table>
+  		<attributes>
+  			<id name="id">
+  				<generated-value strategy="IDENTITY"/>
+  			</id>
+  			<basic name="descripcion"></basic>
+  			<basic name="fecha">
+  				<temporal>DATE</temporal>
+  			</basic>
+  			<basic name="importe"></basic>
+  			<basic name="status">
+  				<enumerated>STRING</enumerated>
+  			</basic>
+  			<many-to-one name="vehiculo" target-entity="uo.ri.model.Vehiculo"/>
+  			<many-to-one name="factura" target-entity="uo.ri.model.Factura"/>
+  			<many-to-one name="mecanico" target-entity="uo.ri.model.Mecanico"/>
+  			<one-to-many name="intervencion" target-entity="uo.ri.model.Intervencion" mapped-by="averia"/>
+  		</attributes>
+  	</entity>
+  	
+  	<entity name="MedioPago" class="uo.ri.model.MedioPago" access="FIELD">
+  		<table name="TMediosPago"></table>
+  		<inheritance strategy="JOINED"></inheritance>
+  		<attributes>
+  			<id name="id">
+  				<generated-value strategy="IDENTITY"/>
+  			</id>
+  			<basic name="acumulado"></basic>
+  			<one-to-many name="cargos" target-entity="uo.ri.model.Cargo" mapped-by="medioPago"/>
+			<many-to-one name="cliente" target-entity="uo.ri.model.Cliente"/>
+		</attributes>
+  	</entity>
+  	
+  	<entity name="Bono" class="uo.ri.model.Bono" access="FIELD">
+  		<table name="TBonos">
+        </table>
+  		<attributes>
+  			<basic name="codigo">
+				<column unique="true" />
+			</basic>
+  			<basic name="disponible"></basic>
+  			<basic name="descripcion"></basic>
+  		</attributes>
+  	</entity>
+  	
+	<entity name="Cargo" class="uo.ri.model.Cargo" access="FIELD">
+  		<table name="TCargos">
+  		<unique-constraint>
+            <column-name>MEDIOPAGO_ID</column-name>
+            <column-name>FACTURA_ID</column-name>
+        </unique-constraint>
+        </table>
+  		<attributes>
+  			<id name="id">
+  				<generated-value strategy="IDENTITY"/>
+  			</id>
+  			<many-to-one name="factura" target-entity="uo.ri.model.Factura"/>
+  			<many-to-one name="medioPago" target-entity="uo.ri.model.MedioPago"/>
+  			<basic name="importe"></basic>
+  		</attributes>
+  	</entity>
+
+	<entity name="Cliente" class="uo.ri.model.Cliente" access="FIELD">
+  		<table name="TCLIENTES">
+        </table>
+  		<attributes>
+  			<id name="id">
+  				<generated-value strategy="IDENTITY"/>
+  			</id>
+  			<basic name="dni">
+				<column unique="true" />
+			</basic>
+  			<basic name="nombre"></basic>
+  			<basic name="apellidos"></basic>
+  			<basic name="email"></basic>
+  			<basic name="phone"></basic>
+  			<embedded name="address"></embedded>
+  			<one-to-many name="vehiculos" target-entity="uo.ri.model.Vehiculo" mapped-by="cliente"/>
+  			<one-to-many name="medioPago" target-entity="uo.ri.model.MedioPago" mapped-by="cliente"/>
+  		</attributes>
+  	</entity>
+  	
+  	<entity name="Contract" class="uo.ri.model.Contract" access="FIELD">
+  		<table name="TContrato">
+  		<unique-constraint>
+            <column-name>MECHANIC_ID</column-name>
+            <column-name>STARTDATE</column-name>
+        </unique-constraint>
+        </table>
+  		<attributes>
+  			<id name="id">
+  				<generated-value strategy="IDENTITY"/>
+  			</id>
+  			<basic name="startDate">
+  				<temporal>DATE</temporal>
+  			</basic>
+  			<basic name="endDate">
+  				<temporal>DATE</temporal>
+  			</basic>
+  			<basic name="baseSalaryPerYear"></basic>
+  			<basic name="compensation"></basic>
+  			<basic name="status">
+  				<enumerated>STRING</enumerated>
+  			</basic>
+  			<many-to-one name="contractType" target-entity="uo.ri.model.ContractType"/>
+  			<many-to-one name="contractCategory" target-entity="uo.ri.model.ContractCategory"/>
+  			<many-to-one name="mechanic" target-entity="uo.ri.model.Mecanico"/>
+  			<one-to-many name="payrolls" target-entity="uo.ri.model.Payroll" mapped-by="contract"/>
+  		</attributes>
+  	</entity>
+  	
+  	<entity name="Factura" class="uo.ri.model.Factura" access="FIELD">
+  		<table name="TFacturas">
+  		</table>
+  		<attributes>
+  			<id name="id">
+  				<generated-value strategy="IDENTITY"/>
+  			</id>
+  			<basic name="numero">
+				<column unique="true" />
+			</basic>
+  			<basic name="fecha">
+  				<temporal>DATE</temporal>
+  			</basic>
+  			<basic name="importe"></basic>
+			<basic name="iva"></basic>
+			<basic name="status">
+  				<enumerated>STRING</enumerated>
+  			</basic>
+  			<one-to-many name="cargos" target-entity="uo.ri.model.Cargo" mapped-by="factura"/>
+			<one-to-many name="averias" target-entity="uo.ri.model.Averia" mapped-by="factura"/>
+  		</attributes>
+  	</entity>
+  	
+  	<entity name="ContractType" class="uo.ri.model.ContractType" access="FIELD">
+  		<table name="TTIPOCONTRATO">
+        </table>
+  		<attributes>
+  			<id name="id">
+  				<generated-value strategy="IDENTITY"/>
+  			</id>
+  			<basic name="name">
+				<column unique="true" />
+			</basic>
+  			<basic name="compensationDays">
+  				<column name="compensationDaysPerYear"/>
+  			</basic>
+  			<one-to-many name="contrato" target-entity="uo.ri.model.Contract" mapped-by="contractType"/>
+		</attributes>
+  	</entity>
+	
+	<entity name="Mecanico" class="uo.ri.model.Mecanico" access="FIELD">
+  		<table name="TMECANICOS">
+        </table>
+  		<attributes>
+  			<id name="id">
+  				<generated-value strategy="IDENTITY"/>
+  			</id>
+  			<basic name="dni">
+				<column unique="true" />
+			</basic>
+  			<basic name="apellidos"></basic>
+  			<basic name="nombre"></basic>
+  			<one-to-many name="averias" target-entity="uo.ri.model.Averia" mapped-by="mecanico"/>
+			<one-to-many name="intervencion" target-entity="uo.ri.model.Intervencion" mapped-by="mecanico"/>
+			<one-to-many name="contracts" target-entity="uo.ri.model.Contract" mapped-by="mechanic"/>		
+		</attributes>
+  	</entity>
+  	
+  	<entity name="Intervencion" class="uo.ri.model.Intervencion" access="FIELD">
+  		<table name="TINTERVENCIONES">
+  		<unique-constraint>
+            <column-name>AVERIA_ID</column-name>
+            <column-name>MECANICO_ID</column-name>
+        </unique-constraint>
+        </table>
+  		<attributes>
+  			<id name="id">
+  				<generated-value strategy="IDENTITY"/>
+  			</id>
+  			<basic name="minutos"></basic>
+  			<many-to-one name="averia" target-entity="uo.ri.model.Averia"/>
+			<many-to-one name="mecanico" target-entity="uo.ri.model.Mecanico"/>
+			<one-to-many name="sustituciones" target-entity="uo.ri.model.Sustitucion" mapped-by="intervencion"/>
+		</attributes>
+  	</entity>
+  	
+  	<entity name="ContractCategory" class="uo.ri.model.ContractCategory" access="FIELD">
+  		<table name="TCATEGORIACONTRATO">
+        </table>
+  		<attributes>
+  			<id name="id">
+  				<generated-value strategy="IDENTITY"/>
+  			</id>
+  			<basic name="name">
+				<column unique="true" />
+			</basic>
+  			<basic name="trieniumSalary"></basic>
+  			<basic name="productivityPlus"></basic>
+  			<one-to-many name="contract" target-entity="uo.ri.model.Contract" mapped-by="contractCategory"/>
+		</attributes>
+  	</entity>
+  	
+  	<entity name="Metalico" class="uo.ri.model.Metalico" access="FIELD">
+  		<table name="TMETALICOS">
+        </table>
+  	</entity>
+  	
+  	<entity name="Payroll" class="uo.ri.model.Payroll" access="FIELD">
+  		<table name="TNominas">
+  		<unique-constraint>
+            <column-name>contract_id</column-name>
+            <column-name>date</column-name>
+        </unique-constraint>
+        </table>
+  		<attributes>
+  			<id name="id">
+  				<generated-value strategy="IDENTITY"/>
+  			</id>
+  			<basic name="date">
+  				<temporal>DATE</temporal>
+  			</basic>
+  			<basic name="baseSalary"></basic>
+			<basic name="extraSalary"></basic>
+			<basic name="productivity"></basic>
+			<basic name="triennium"></basic>
+			<basic name="irpf"></basic>
+			<basic name="socialSecurity"></basic>
+  			<many-to-one name="contract" target-entity="uo.ri.model.Contract"/>
+		</attributes>
+  	</entity>
+  	
+  	<entity name="Repuesto" class="uo.ri.model.Repuesto" access="FIELD">
+  		<table name="TRepuestos">
+        </table>
+  		<attributes>
+  			<id name="id">
+  				<generated-value strategy="IDENTITY"/>
+  			</id>
+  			<basic name="codigo">
+				<column unique="true" />
+			</basic>
+  			<basic name="descripcion"></basic>
+			<basic name="precio"></basic>
+			<one-to-many name="sustituciones" target-entity="uo.ri.model.Sustitucion" mapped-by="repuesto"/>
+		</attributes>
+  	</entity>
+  	
+  	<entity name="Sustitucion" class="uo.ri.model.Sustitucion" access="FIELD">
+  		<table name="TSustituciones">
+  		<unique-constraint>
+            <column-name>repuesto_id</column-name>
+            <column-name>intervencion_id</column-name>
+        </unique-constraint>
+        </table>
+  		<attributes>
+  			<id name="id">
+  				<generated-value strategy="IDENTITY"/>
+  			</id>
+  			<many-to-one name="repuesto" target-entity="uo.ri.model.Repuesto"/>
+			<many-to-one name="intervencion" target-entity="uo.ri.model.Intervencion"/>
+			<basic name="cantidad"></basic>
+		</attributes>
+  	</entity>
+  	
+  	<entity name="TarjetaCredito" class="uo.ri.model.TarjetaCredito" access="FIELD">
+  		<table name="TTarjetasCredito"></table>
+        <attributes>
+        	<basic name="numero">
+				<column unique="true" />
+			</basic>
+  			<basic name="tipo"></basic>
+  			<basic name="validez">
+  				<temporal>DATE</temporal>
+  			</basic>
+		</attributes>
+  	</entity>
+  	
+  	 <entity name="Vehiculo" class="uo.ri.model.Vehiculo" access="FIELD">
+  		<table name="TVehiculos"> </table>
+        <attributes>
+       		<id name="id">
+  				<generated-value strategy="IDENTITY"/>
+  			</id>
+  			<basic name="matricula">
+				<column unique="true" />
+			</basic>
+  			<basic name="marca"></basic>
+  			<basic name="modelo"></basic>
+  			<basic name="numAverias">
+  				<column name="NUM_AVERIAS"/>
+  			</basic>
+  			<one-to-many name="averias" target-entity="uo.ri.model.Averia" mapped-by="vehiculo"/>
+			<many-to-one name="cliente" target-entity="uo.ri.model.Cliente"/>
+			<many-to-one name="tipo" target-entity="uo.ri.model.TipoVehiculo"/>
+		</attributes>
+  	</entity>
+  	
+  	<entity name="TipoVehiculo" class="uo.ri.model.TipoVehiculo" access="FIELD">
+  		<table name="TTiposVehiculo"></table>
+        <attributes>
+        	<id name="id">
+  				<generated-value strategy="IDENTITY"/>
+  			</id>
+  			<basic name="nombre">
+				<column unique="true" />
+			</basic>
+  			<basic name="precioHora"></basic>
+  			<one-to-many name="vehiculos" target-entity="uo.ri.model.Vehiculo" mapped-by="tipo"/>
+		</attributes>
+  	</entity>
+  	
+  	<embeddable class="uo.ri.model.types.Address" access="FIELD">
+    	<attributes>
+    		<basic name="street"></basic>
+    		<basic name="city"></basic>
+    		<basic name="zipCode"></basic>
+    	</attributes>
+	</embeddable>
+	
+	
+
+	<!-- Averia quieries --> 
+	<named-query name="Averia.findByIds">
+		<query>select a 
+					from Averia a 
+					where a.id in ?1
+		</query>
+	</named-query>
+
+	<named-query name="Averia.findNoFacturadasByDni">
+		<query>
+			select a 
+				from Averia a 
+				where a.vehiculo.cliente.dni = ?1 
+					and a.status = uo.ri.model.types.AveriaStatus.TERMINADA 
+		</query>
+	</named-query>
+	
+	<named-query name="Averia.findAveriasByDni">
+		<query>
+			select a 
+				from Averia a 
+				where a.vehiculo.cliente.dni = ?1 
+		</query>
+	</named-query>
+	
+	<!-- MedioPago queries -->
+	<named-query name="MedioPago.findByInvoiceId">
+		<query>
+			select m 
+			from Factura f 
+				join f.averias a 
+				join a.vehiculo.cliente c 
+				join c.medioPago m 
+			where f.id = ?1
+		</query>
+	</named-query>
+	
+	<!-- Mecanico queries -->
+	<named-query name="Mecanico.findByDni">
+		<query>
+			select m 
+				from Mecanico m 
+				where m.dni = ?1
+		</query>
+	</named-query>
+
+	<named-query name="Mecanico.findAll">
+		<query>
+			select m 
+				from Mecanico m 
+		</query>
+	</named-query>
+	
+	<named-query name="Mecanico.findById">
+		<query>
+			select m 
+				from Mecanico m 
+				where m.id = ?1
+		</query>
+	</named-query>
+	
+	<named-query name="Mecanico.findByIdContractActive">
+		<query>
+			select c.mechanic
+				from Contract c 
+				where c.status = uo.ri.model.types.ContractStatus.ACTIVE
+		</query>
+	</named-query>
+	
+	
+
+	<!-- Factura queries -->
+	<named-query name="Factura.findByNumber">
+		<query>
+			select f 
+				from Factura f 
+				where f.numero = ?1
+		</query>
+	</named-query>
+	
+	<named-query name="Factura.getNextInvoiceNumber">
+		<query>
+			select coalesce(max(f.numero) + 1, 1) 
+				from Factura f
+		</query>
+	</named-query>
+	
+	<!-- Contract Type queries -->
+	<named-query name="ContractType.findById">
+		<query>
+			select t 
+				from ContractType t 
+				where t.id = ?1
+		</query>
+	</named-query>
+	
+	<named-query name="ContractType.findAll">
+		<query>
+			select c
+				from ContractType c 
+		</query>
+	</named-query>
+	
+	<named-query name="ContractType.findByName">
+		<query>
+			select t 
+				from ContractType t 
+				where t.name = ?1
+		</query>
+	</named-query>
+	
+	<!-- Contract queries -->
+	<named-query name="Contract.findById">
+		<query>
+			select co 
+				from Contract co 
+				where co.id = ?1
+		</query>
+	</named-query>
+	
+	<named-query name="Contract.findContractsActiveOrExtinguished">
+		<query>
+			select c
+				from Contract c
+				where (c.status = uo.ri.model.types.ContractStatus.ACTIVE
+					or c.endDate = ?1) 
+		</query>
+	</named-query>
+	
+	<!-- Contract categories queries -->
+	<named-query name="ContractCategory.findById">
+		<query>
+			select c 
+			from ContractCategory c 
+			where c.id = ?1
+		</query>
+	</named-query>
+	
+	<named-query name="ContractCategory.findAll">
+		<query>
+			select c
+				from ContractCategory c 
+		</query>
+	</named-query>
+	
+	<named-query name="ContractCategory.findByName">
+		<query>
+			select c 
+			from ContractCategory c 
+			where c.name = ?1
+		</query>
+	</named-query>
+	
+	
+	<!-- Client queries -->
+	<named-query name="Cliente.findByDni">
+		<query>
+			select c 
+				from Cliente c 
+				where c.dni = ?1
+		</query>
+	</named-query>
+	
+	<!-- Vehiculo queries -->
+	<named-query name="Vehiculo.findVehiculoByClientId">
+		<query>
+			select c
+				from Vehiculo c
+				where c.cliente.id = ?1
+		</query>
+	</named-query>
+	
+	<!-- Payroll queries -->
+	<named-query name="Payroll.findPayrollByMechanicId">
+		<query>
+			select p
+				from Payroll p
+				where p.contract.mechanic.id = ?1
+		</query>
+	</named-query>
+	
+	<named-query name="Payroll.findLastGeneratedPayrolls">
+		<query>
+			select p
+				from Payroll p
+				where p.date = (
+					select max(p2.date)
+					from Payroll p2)
+		</query>
+	</named-query>
+	
+	<named-query name="Payroll.findLastPayrollByMechanicId">
+		<query>
+			select p
+				from Payroll p
+				where p.date = (
+						select max(p2.date)
+							from Payroll p2
+							where p2.contract.mechanic.id = ?1) 
+					and p.contract.mechanic.id = ?1
+		</query>
+	</named-query>
+	
+	<!-- Intervencion queries -->
+	<named-query name="Intervencion.findByMechanicIdBetweenDates">
+		<query>
+			select i
+				from Intervencion i
+				where i.mecanico.id = ?1 
+					and i.averia.fecha between ?2 and ?3
+		</query>
+	</named-query>
+	
+	
+	
+<!-- 
+	Use this format if your query has 
+	numeric comparisons as the one in this example
+	
+	<named-query name="findItemsOnSaleByCategoryId">
+		<query>
+			<![CDATA[
+			select i 
+				from Item i join i.categories c
+				where c.id = ?2
+					and i.startDate <= ?1
+					and i.endDate >= ?1 
+			]]>
+		</query>
+	</named-query>
+ -->		
+
+</entity-mappings>
