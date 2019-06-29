@@ -1,0 +1,16 @@
+Nombre: Alba Serena Suárez
+DNI: 58437073F
+Casos de uso (convocatoria ordinaria):
+	-Gestión de contratos
+	-Gestión de tipos de contrato
+Casos de uso (convocatoria extraordinaria):
+	-Gestión de nóminas.
+	-Gestión de mecánicos ampliado.
+	-Gestión de tipos de categorías.
+Ampliaciones:
+	-Añadir más test
+	-Pasar todas las anotaciones @Jpa al orm.xml
+	-Usar otro mapeador
+Comentarios:
+-Se ha modificado el Printer.printContract(ContractDto c) y el ContractDto con un nuevo parámetro (número de nóminas) para que al listar los contratos de un mecánico, se muestre el número de nóminas que tiene.
+-Se ha modificado el UpdateContractAction añadiéndole un BusinessCheck para comprobar que el contrato obtenido no fuese null.
